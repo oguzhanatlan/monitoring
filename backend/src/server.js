@@ -14,6 +14,7 @@ import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import systemRoutes, { registerSystemNamespace } from './routes/system.js';
 import fileRoutes from './routes/files.js';
+import securityRoutes from './routes/security.js';
 import { registerTerminalNamespace } from './routes/terminal.js';
 import { authMiddleware, socketAuthMiddleware } from './middleware/authMiddleware.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
@@ -67,6 +68,7 @@ app.use('/api', authMiddleware);
 app.use('/api/users', userRoutes);
 app.use('/api/system', systemRoutes);
 app.use('/api/files', fileRoutes);
+app.use('/api/security', securityRoutes);
 
 // 404 için JSON dön (statik SPA fallback'i yanlışlıkla API'yi yakalamasın)
 app.use('/api', (req, res) => res.status(404).json({ error: 'Bulunamadı' }));

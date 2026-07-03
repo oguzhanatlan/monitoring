@@ -1,0 +1,33 @@
+{
+  "name": "server-panel-backend",
+  "version": "1.0.0",
+  "description": "Web tabanlı sunucu yönetim paneli — backend API",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "archiver": "^7.0.1",
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.10.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1",
+    "node-pty": "^1.0.0",
+    "otpauth": "^9.4.0",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1",
+    "systeminformation": "^5.25.11"
+  }
+}

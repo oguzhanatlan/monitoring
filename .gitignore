@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.log
+
+# Ortam değişkenleri — asla commit edilmez
+.env
+backend/.env
+
+# SQLite veritabanı ve çalışma verisi
+backend/data/

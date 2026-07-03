@@ -323,3 +323,59 @@ label {
 .service.failed .service-dot {
   background: var(--danger);
 }
+
+/* --- Dosya yöneticisi --- */
+.mono {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.85rem;
+}
+
+.fm-toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.fm-path {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.fm-list {
+  border: 2px dashed transparent;
+  border-radius: 10px;
+  transition: border-color 0.15s;
+}
+
+.fm-list.drag-over {
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.05);
+}
+
+.fm-name {
+  cursor: pointer;
+  user-select: none;
+}
+
+.fm-icon {
+  margin-right: 8px;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.editor-path {
+  flex: 1;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

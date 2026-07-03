@@ -10,6 +10,7 @@ import './db/database.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import systemRoutes, { registerSystemNamespace } from './routes/system.js';
+import fileRoutes from './routes/files.js';
 import { authMiddleware, socketAuthMiddleware } from './middleware/authMiddleware.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
 import { startRefreshTokenCleanup } from './utils/tokens.js';
@@ -45,6 +46,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', authMiddleware);
 app.use('/api/users', userRoutes);
 app.use('/api/system', systemRoutes);
+app.use('/api/files', fileRoutes);
 
 startRefreshTokenCleanup();
 

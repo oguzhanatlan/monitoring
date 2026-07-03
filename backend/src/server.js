@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import systemRoutes, { registerSystemNamespace } from './routes/system.js';
 import fileRoutes from './routes/files.js';
+import { registerTerminalNamespace } from './routes/terminal.js';
 import { authMiddleware, socketAuthMiddleware } from './middleware/authMiddleware.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
 import { startRefreshTokenCleanup } from './utils/tokens.js';
@@ -59,6 +60,7 @@ export const io = new SocketServer(httpServer, {
 });
 
 registerSystemNamespace(io, socketAuthMiddleware);
+registerTerminalNamespace(io, socketAuthMiddleware);
 
 httpServer.listen(config.port, config.host, () => {
   console.log(`Panel backend ${config.host}:${config.port} adresinde çalışıyor`);

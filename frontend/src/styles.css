@@ -379,3 +379,77 @@ label {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* --- Terminal --- */
+.terminal-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 48px);
+}
+
+.terminal-tabs {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.terminal-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.terminal-tab.active {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--accent-dark);
+}
+
+.tab-close {
+  opacity: 0.6;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.tab-close:hover {
+  opacity: 1;
+  color: var(--danger);
+}
+
+.tab-add {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  background: transparent;
+  color: var(--accent);
+}
+
+.terminal-body {
+  flex: 1;
+  min-height: 0;
+  background: #0f172a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  position: relative;
+}
+
+.terminal-container {
+  height: 100%;
+}
+
+.terminal-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}

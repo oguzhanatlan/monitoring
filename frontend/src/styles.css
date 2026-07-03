@@ -243,3 +243,83 @@ label {
   align-items: center;
   flex-wrap: wrap;
 }
+
+/* --- Dashboard --- */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.stat-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-card strong {
+  font-size: 1.6rem;
+}
+
+.small {
+  font-size: 0.8rem;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.usage-bar {
+  background: var(--bg);
+  border-radius: 6px;
+  height: 8px;
+  width: 140px;
+  display: inline-block;
+  margin-right: 8px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.usage-fill {
+  height: 100%;
+}
+
+.service-list {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.service {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 0.9rem;
+}
+
+.service-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+
+.service.active .service-dot {
+  background: var(--success);
+}
+
+.service.inactive .service-dot,
+.service.failed .service-dot {
+  background: var(--danger);
+}

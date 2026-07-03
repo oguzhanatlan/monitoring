@@ -9,7 +9,8 @@ import config from './config/config.js';
 import './db/database.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
-import { authMiddleware } from './middleware/authMiddleware.js';
+import systemRoutes, { registerSystemNamespace } from './routes/system.js';
+import { authMiddleware, socketAuthMiddleware } from './middleware/authMiddleware.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
 import { startRefreshTokenCleanup } from './utils/tokens.js';
 
@@ -43,6 +44,7 @@ app.use('/api/auth', authRoutes);
 // Buradan sonraki TÜM /api rotaları oturum zorunlu
 app.use('/api', authMiddleware);
 app.use('/api/users', userRoutes);
+app.use('/api/system', systemRoutes);
 
 startRefreshTokenCleanup();
 
@@ -53,6 +55,8 @@ export const io = new SocketServer(httpServer, {
   path: '/ws',
   cors: { origin: config.corsOrigins, credentials: true },
 });
+
+registerSystemNamespace(io, socketAuthMiddleware);
 
 httpServer.listen(config.port, config.host, () => {
   console.log(`Panel backend ${config.host}:${config.port} adresinde çalışıyor`);

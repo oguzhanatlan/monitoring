@@ -30,3 +30,216 @@ body {
   justify-content: center;
   min-height: 100vh;
 }
+
+/* --- Genel yerleşim --- */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+}
+
+.logo {
+  font-size: 1.1rem;
+  margin: 4px 8px 20px;
+  color: var(--accent);
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sidebar nav a {
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.sidebar nav a:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.sidebar nav a.active {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+  min-width: 0;
+}
+
+.page h2 {
+  margin-top: 0;
+}
+
+/* --- Form ve butonlar --- */
+button {
+  background: var(--accent-dark);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.15);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+button.danger {
+  background: #b91c1c;
+}
+
+input,
+select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 0.95rem;
+}
+
+input:focus {
+  outline: 2px solid var(--accent-dark);
+  border-color: transparent;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.error {
+  color: var(--danger);
+}
+
+.dim {
+  color: var(--text-dim);
+}
+
+.badge {
+  background: var(--accent-dark);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  margin-left: 8px;
+}
+
+/* --- Login / Setup --- */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.auth-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  width: 360px;
+}
+
+.auth-card h1 {
+  margin: 0 0 16px;
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* --- Tablolar ve paneller --- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-panel);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+
+.data-table th {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.row-actions button {
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-top: 20px;
+}
+
+.panel h3 {
+  margin-top: 0;
+}
+
+.inline-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}

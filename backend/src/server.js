@@ -7,6 +7,11 @@ import { Server as SocketServer } from 'socket.io';
 
 import config from './config/config.js';
 import './db/database.js';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import { authMiddleware } from './middleware/authMiddleware.js';
+import { generalLimiter } from './middleware/rateLimiter.js';
+import { startRefreshTokenCleanup } from './utils/tokens.js';
 
 const app = express();
 
@@ -26,9 +31,20 @@ app.use(
 app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 
+app.use('/api', generalLimiter);
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Auth gerektirmeyenler: sadece bu blok (setup/login/refresh kendi limiter'larıyla)
+app.use('/api/auth', authRoutes);
+
+// Buradan sonraki TÜM /api rotaları oturum zorunlu
+app.use('/api', authMiddleware);
+app.use('/api/users', userRoutes);
+
+startRefreshTokenCleanup();
 
 const httpServer = http.createServer(app);
 

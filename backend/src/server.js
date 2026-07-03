@@ -1,4 +1,7 @@
 import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -20,13 +23,29 @@ const app = express();
 
 app.set('trust proxy', 1); // Nginx arkasında gerçek istemci IP'si için
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        // Vite build harici script üretir; xterm/recharts stil enjekte edebilir
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        // QR kod data: URL olarak gömülür
+        imgSrc: ["'self'", 'data:'],
+        connectSrc: ["'self'"], // WebSocket dahil aynı origin
+        fontSrc: ["'self'", 'data:'],
+      },
+    },
+  })
+);
 app.use(
   cors({
     origin: (origin, cb) => {
-      // origin'siz istekler (curl, aynı origin) ve izinli origin'ler kabul edilir
-      if (!origin || config.corsOrigins.includes(origin)) return cb(null, true);
-      cb(new Error('CORS: bu origin\'e izin verilmiyor'));
+      // origin'siz istekler (curl, aynı origin) ve izinli origin'ler CORS başlığı alır.
+      // İzinsiz origin'e başlık EKLENMEZ (hata fırlatmayız): tarayıcı isteği kendi
+      // engeller, same-origin ve araç istekleri çalışmaya devam eder.
+      cb(null, !origin || config.corsOrigins.includes(origin));
     },
     credentials: true,
   })
@@ -48,6 +67,21 @@ app.use('/api', authMiddleware);
 app.use('/api/users', userRoutes);
 app.use('/api/system', systemRoutes);
 app.use('/api/files', fileRoutes);
+
+// 404 için JSON dön (statik SPA fallback'i yanlışlıkla API'yi yakalamasın)
+app.use('/api', (req, res) => res.status(404).json({ error: 'Bulunamadı' }));
+
+// Üretimde derlenmiş frontend'i (frontend/dist) sun; SPA fallback ile
+// istemci tarafı yönlendirme çalışsın. Dizin yoksa (geliştirme) atlanır.
+const distDir = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../frontend/dist'
+);
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  app.get('*', (req, res) => res.sendFile(path.join(distDir, 'index.html')));
+  console.log('Frontend statik dosyaları sunuluyor:', distDir);
+}
 
 startRefreshTokenCleanup();
 

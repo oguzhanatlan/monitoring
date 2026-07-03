@@ -1,0 +1,47 @@
+# ==========================================================================
+#  Sunucu Yönetim Paneli — systemd service
+#
+#  Kurulum:
+#    sudo cp deploy/server-panel.service /etc/systemd/system/
+#    sudo systemctl daemon-reload
+#    sudo systemctl enable --now server-panel
+#
+#  GÜVENLİK NOTU:
+#  - Terminal ve dosya sistemi erişimi bu servisi çalıştıran kullanıcının
+#    yetkileriyle sınırlıdır. root ile ÇALIŞTIRMAYIN.
+#  - Önce sınırlı yetkili bir sistem kullanıcısı oluşturun (bkz. README),
+#    aşağıdaki User/Group alanlarını ona göre ayarlayın.
+# ==========================================================================
+
+[Unit]
+Description=Sunucu Yonetim Paneli (backend + statik frontend)
+After=network.target
+
+[Service]
+Type=simple
+
+# --- DÜZENLEYİN: paneli çalıştıracak sınırlı yetkili kullanıcı ---
+User=panel
+Group=panel
+
+# --- DÜZENLEYİN: kodun sunucuda bulunduğu dizin ---
+WorkingDirectory=/opt/server-panel/backend
+Environment=NODE_ENV=production
+# .env dosyası WorkingDirectory içinde okunur (dotenv). Alternatif:
+# EnvironmentFile=/opt/server-panel/backend/.env
+
+ExecStart=/usr/bin/node src/server.js
+
+Restart=on-failure
+RestartSec=5
+
+# --- İşletim sistemi seviyesinde sıkılaştırma ---
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+# Panelin dosya yöneticisiyle erişmesi gereken dizinler dışında yazmayı kısıtlamak
+# isterseniz ReadWritePaths kullanabilirsiniz (ALLOWED_ROOTS ile uyumlu tutun):
+# ReadWritePaths=/home /var/www /opt/server-panel/backend/data
+
+[Install]
+WantedBy=multi-user.target

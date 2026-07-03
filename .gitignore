@@ -8,3 +8,6 @@ backend/.env
 
 # SQLite veritabanı ve çalışma verisi
 backend/data/
+
+# Makineye özgü geliştirme ayarları (WSL yolları içerir)
+.claude/

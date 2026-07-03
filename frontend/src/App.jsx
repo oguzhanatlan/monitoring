@@ -9,6 +9,7 @@ import Users from './pages/Users.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import FileManager from './pages/FileManager.jsx';
 import Terminal from './pages/Terminal.jsx';
+import Security from './pages/Security.jsx';
 
 function Gate() {
   const { user, loading } = useAuth();
@@ -34,6 +35,7 @@ function Gate() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/files" element={<FileManager />} />
         <Route path="/terminal" element={<Terminal />} />
+        <Route path="/security" element={<Security />} />
         <Route path="/users" element={<Users />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

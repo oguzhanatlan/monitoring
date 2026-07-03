@@ -3,6 +3,12 @@ import { Terminal as XTerm } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
 import { connectNamespace } from '../api/socket.js';
+import { resolveTheme } from '../theme.js';
+
+const XTERM_THEMES = {
+  dark: { background: '#0b0b0f', foreground: '#e5e5ea', cursor: '#e5e5ea' },
+  light: { background: '#ffffff', foreground: '#1d1d1f', cursor: '#1d1d1f', selectionBackground: '#b3d4fc' },
+};
 
 // Tek bir terminal sekmesi = bir xterm + bir socket + bir pty.
 // active=false iken DOM'da kalır (görünmez) ki sekme değişince oturum kopmasın.
@@ -15,9 +21,9 @@ export default function TerminalTab({ active, onExit }) {
   useEffect(() => {
     const term = new XTerm({
       cursorBlink: true,
-      fontFamily: "'Cascadia Code', 'Consolas', monospace",
-      fontSize: 14,
-      theme: { background: '#0f172a', foreground: '#e2e8f0' },
+      fontFamily: "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
+      fontSize: 13,
+      theme: XTERM_THEMES[resolveTheme()] || XTERM_THEMES.dark,
     });
     const fit = new FitAddon();
     term.loadAddon(fit);

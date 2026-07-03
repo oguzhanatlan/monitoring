@@ -10,6 +10,8 @@ Ubuntu sunucu için tarayıcıdan erişilen yönetim paneli: **canlı sistem izl
 - **Dosya yöneticisi:** listeleme, kod editörü (CodeMirror), yükleme (drag&drop), indirme, zip indir/aç, mkdir, yeniden adlandır/taşı, kopyala, çoklu silme — path traversal korumalı.
 - **Web terminal:** gerçek `/bin/bash` oturumu (node-pty), çoklu sekme, xterm.js.
 - **Kullanıcı yönetimi:** çoklu kullanıcı (eşit yetki), 2FA (TOTP), audit log.
+- **Güvenlik paneli:** açık portlar (dinlenen servisler), giriş geçmişi + başarısız denemeler (IP başına sayım), aktif oturumlar (uzaktan sonlandırma), UFW firewall durumu, filtrelenebilir denetim kaydı görüntüleyici.
+- **Arayüz:** macOS/Apple tarzı tasarım; sistem tercihine uyan otomatik açık/koyu tema (manuel geçiş de var).
 
 ## Güvenlik
 
@@ -129,6 +131,15 @@ sudo ufw deny 3000            # backend yalnızca localhost'tan Nginx'e açık
 sudo ufw enable
 sudo ufw status
 ```
+
+**Güvenlik panelinde UFW durumunu göstermek için (opsiyonel):** Panel root olmayan `panel` kullanıcısıyla çalıştığından `ufw status` çıktısını okuyamaz (Güvenlik sayfasında "bilinmiyor" görünür). Yalnızca bu salt-okunur komuta izin vermek için sınırlı bir sudoers kuralı ekleyebilirsiniz:
+
+```bash
+echo 'panel ALL=(root) NOPASSWD: /usr/sbin/ufw status verbose' | sudo tee /etc/sudoers.d/panel-ufw
+sudo chmod 440 /etc/sudoers.d/panel-ufw
+```
+
+> Not: Bu izni verirseniz backend'deki firewall sorgusunu `execSafe('sudo', ['ufw','status','verbose'])` olacak şekilde güncelleyin ([backend/src/routes/security.js](backend/src/routes/security.js)). Vermezseniz panel yalnızca UFW servisinin aktif olup olmadığını gösterir; güvenlik açısından bir eksiklik değildir.
 
 Panel artık `https://panel.turkiyemcepte.com` adresinde. İlk ziyarette setup ekranından yönetici hesabını oluşturun ve hemen **2FA'yı etkinleştirin** (Kullanıcılar sayfası).
 

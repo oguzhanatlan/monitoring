@@ -45,7 +45,12 @@ function MetricChart({ data, dataKey, color, unit, domain }) {
         <XAxis dataKey="t" hide />
         <YAxis domain={domain || [0, 'auto']} width={44} tick={{ fill: '#94a3b8', fontSize: 11 }} />
         <Tooltip
-          contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8 }}
+          contentStyle={{
+            background: 'var(--card-bg)',
+            border: '0.5px solid var(--border)',
+            borderRadius: 8,
+            color: 'var(--text)',
+          }}
           formatter={(v) => [`${typeof v === 'number' ? v.toFixed(1) : v}${unit}`, '']}
           labelFormatter={() => ''}
         />

@@ -1,12 +1,22 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../api/client.js';
 import { useAuth } from '../AuthContext.jsx';
+import Modal from '../components/Modal.jsx';
 
 export default function Users() {
   const { user: me, logout } = useAuth();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+
+  // Modal durumları
+  const [showAddModal, setShowAddModal] = useState(false);
   const [newUser, setNewUser] = useState({ username: '', password: '' });
+  const [addError, setAddError] = useState('');
+
+  const [resetTarget, setResetTarget] = useState(null); // şifresi sıfırlanacak kullanıcı
+  const [resetPass, setResetPass] = useState('');
+  const [resetError, setResetError] = useState('');
 
   // 2FA kurulum durumu
   const [totpEnabled, setTotpEnabled] = useState(false);
@@ -32,15 +42,23 @@ export default function Users() {
     setError(err.response?.data?.error || fallback);
   }
 
+  function openAddModal() {
+    setNewUser({ username: '', password: '' });
+    setAddError('');
+    setShowAddModal(true);
+  }
+
   async function addUser(e) {
     e.preventDefault();
-    setError('');
+    setAddError('');
     try {
       await api.post('/users', newUser);
       setNewUser({ username: '', password: '' });
+      setShowAddModal(false);
+      setNotice('Kullanıcı eklendi.');
       load();
     } catch (err) {
-      handleError(err, 'Kullanıcı eklenemedi');
+      setAddError(err.response?.data?.error || 'Kullanıcı eklenemedi');
     }
   }
 
@@ -56,20 +74,28 @@ export default function Users() {
     }
   }
 
-  async function resetPassword(u) {
-    const password = prompt(`"${u.username}" için yeni şifre (en az 8 karakter):`);
-    if (!password) return;
-    setError('');
+  function openResetModal(u) {
+    setResetTarget(u);
+    setResetPass('');
+    setResetError('');
+  }
+
+  async function submitReset(e) {
+    e.preventDefault();
+    setResetError('');
     try {
-      await api.put(`/users/${u.id}/password`, { password });
-      if (u.id === me.id) {
-        alert('Şifreniz değişti, yeniden giriş yapmanız gerekiyor.');
+      await api.put(`/users/${resetTarget.id}/password`, { password: resetPass });
+      const isSelf = resetTarget.id === me.id;
+      setResetTarget(null);
+      setResetPass('');
+      if (isSelf) {
+        // Kendi şifresini değiştirince tüm oturumlar iptal olur → yeniden giriş
         logout();
       } else {
-        alert('Şifre güncellendi.');
+        setNotice('Şifre güncellendi.');
       }
     } catch (err) {
-      handleError(err, 'Şifre değiştirilemedi');
+      setResetError(err.response?.data?.error || 'Şifre değiştirilemedi');
     }
   }
 
@@ -114,10 +140,12 @@ export default function Users() {
     <div className="page">
       <h2>Kullanıcılar</h2>
       {error && <p className="error">{error}</p>}
+      {notice && <p className="notice">{notice}</p>}
 
       <section className="card">
         <div className="card-head">
           <h3>Hesaplar</h3>
+          <button onClick={openAddModal}>+ Yeni kullanıcı</button>
         </div>
         <table className="data-table">
           <thead>
@@ -144,7 +172,7 @@ export default function Users() {
                 <td className="dim small">{u.created_at}</td>
                 <td className="dim small">{u.last_login || '—'}</td>
                 <td className="row-actions">
-                  <button className="ghost" onClick={() => resetPassword(u)}>
+                  <button className="ghost" onClick={() => openResetModal(u)}>
                     Şifre sıfırla
                   </button>
                   <button className="danger" onClick={() => removeUser(u)}>
@@ -155,24 +183,6 @@ export default function Users() {
             ))}
           </tbody>
         </table>
-      </section>
-
-      <section className="panel">
-        <h3>Yeni kullanıcı ekle</h3>
-        <form className="inline-form" onSubmit={addUser}>
-          <input
-            placeholder="Kullanıcı adı"
-            value={newUser.username}
-            onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-          />
-          <input
-            type="password"
-            placeholder="Şifre (en az 8 karakter)"
-            value={newUser.password}
-            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-          />
-          <button>Ekle</button>
-        </form>
       </section>
 
       <section className="panel">
@@ -213,6 +223,69 @@ export default function Users() {
           <button onClick={startTotpSetup}>2FA kurulumunu başlat</button>
         )}
       </section>
+
+      {showAddModal && (
+        <Modal title="Yeni kullanıcı ekle" onClose={() => setShowAddModal(false)}>
+          <form className="modal-form" onSubmit={addUser}>
+            <label>
+              Kullanıcı adı
+              <input
+                autoFocus
+                placeholder="ör. deploy"
+                value={newUser.username}
+                onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+              />
+            </label>
+            <label>
+              Şifre (en az 8 karakter)
+              <input
+                type="password"
+                value={newUser.password}
+                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+              />
+            </label>
+            {addError && <p className="error">{addError}</p>}
+            <div className="modal-actions">
+              <button type="button" className="ghost" onClick={() => setShowAddModal(false)}>
+                Vazgeç
+              </button>
+              <button type="submit">Ekle</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {resetTarget && (
+        <Modal
+          title={`Şifre sıfırla — ${resetTarget.username}`}
+          onClose={() => setResetTarget(null)}
+        >
+          <form className="modal-form" onSubmit={submitReset}>
+            {resetTarget.id === me.id && (
+              <p className="dim">
+                Kendi şifrenizi değiştiriyorsunuz; kaydettikten sonra yeniden giriş yapmanız
+                gerekecek.
+              </p>
+            )}
+            <label>
+              Yeni şifre (en az 8 karakter)
+              <input
+                autoFocus
+                type="password"
+                value={resetPass}
+                onChange={(e) => setResetPass(e.target.value)}
+              />
+            </label>
+            {resetError && <p className="error">{resetError}</p>}
+            <div className="modal-actions">
+              <button type="button" className="ghost" onClick={() => setResetTarget(null)}>
+                Vazgeç
+              </button>
+              <button type="submit">Kaydet</button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 }

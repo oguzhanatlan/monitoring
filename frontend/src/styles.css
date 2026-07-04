@@ -423,6 +423,24 @@ label {
   margin: 0;
 }
 
+/* Kart/panel içi tek satırlık formlar (kullanıcı ekle, 2FA) */
+.inline-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.inline-form input {
+  flex: 0 1 240px;
+  min-width: 180px;
+}
+
+.inline-form p {
+  margin: 0;
+  color: var(--text-dim);
+}
+
 /* ===== Tablolar ===== */
 .data-table {
   width: 100%;

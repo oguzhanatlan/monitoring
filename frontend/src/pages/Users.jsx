@@ -115,36 +115,47 @@ export default function Users() {
       <h2>Kullanıcılar</h2>
       {error && <p className="error">{error}</p>}
 
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Kullanıcı adı</th>
-            <th>2FA</th>
-            <th>Oluşturulma</th>
-            <th>Son giriş</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u) => (
-            <tr key={u.id}>
-              <td>
-                {u.username}
-                {u.id === me.id && <span className="badge">siz</span>}
-              </td>
-              <td>{u.totp_enabled ? 'Açık' : 'Kapalı'}</td>
-              <td>{u.created_at}</td>
-              <td>{u.last_login || '—'}</td>
-              <td className="row-actions">
-                <button onClick={() => resetPassword(u)}>Şifre sıfırla</button>
-                <button className="danger" onClick={() => removeUser(u)}>
-                  Sil
-                </button>
-              </td>
+      <section className="card">
+        <div className="card-head">
+          <h3>Hesaplar</h3>
+        </div>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Kullanıcı adı</th>
+              <th>2FA</th>
+              <th>Oluşturulma</th>
+              <th>Son giriş</th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((u) => (
+              <tr key={u.id}>
+                <td>
+                  {u.username}
+                  {u.id === me.id && <span className="badge">siz</span>}
+                </td>
+                <td>
+                  <span className={`badge-status ${u.totp_enabled ? 'active' : 'warn'}`}>
+                    {u.totp_enabled ? 'Açık' : 'Kapalı'}
+                  </span>
+                </td>
+                <td className="dim small">{u.created_at}</td>
+                <td className="dim small">{u.last_login || '—'}</td>
+                <td className="row-actions">
+                  <button className="ghost" onClick={() => resetPassword(u)}>
+                    Şifre sıfırla
+                  </button>
+                  <button className="danger" onClick={() => removeUser(u)}>
+                    Sil
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
 
       <section className="panel">
         <h3>Yeni kullanıcı ekle</h3>
